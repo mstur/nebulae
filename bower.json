@@ -1,0 +1,24 @@
+{
+  "name": "nebulae",
+  "version": "0.0.0",
+  "homepage": "https://github.com/chufanl/nebulae",
+  "authors": [
+    "chufanl <chufan.liang@gmail.com>"
+  ],
+  "main": "app.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "private": true,
+  "dependencies": {
+    "angular": "~1.4.3",
+    "bootstrap": "~3.3.5",
+    "ng-file-upload": "~7.0.17",
+    "ng-file-upload-shim": "~7.0.17"
+  }
+}

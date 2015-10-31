@@ -1,0 +1,408 @@
+<script src="/js/admindash.js"></script>
+<div class="container-fluid" ng-app="nebulaeAdmin">
+	<div ng-controller="overviewController">
+		<div id="changeDurationModal" class="modal fade">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Change duration</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<label class="col-xs-4 col-lg-3 control-label">Duration</label>
+								<div class="col-xs-8 col-lg-9">
+									<input type="text" class="form-control" ng-model="contest.duration"></input>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" ng-click="changeDuration(contest)" data-dismiss="modal">Submit response</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<span class="navbar-brand">
+						<span class="text-danger">
+							((timeleft))
+						</span>
+					</span>
+					<p class="navbar-text">
+						((username))
+					</p>
+					<ul class="nav navbar-nav navbar-right">
+						<li><a href="#" ng-click="startContest()"><span class="glyphicon glyphicon-play" aria-hidden="true"></span> Start</a></li>
+						<li><a href="#" ng-click="stopContest()"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span> Stop</a></li>
+						<li><a href="#" ng-click="durationModal()"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Change Duration</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<div ng-controller="tabController">
+		<ul class="nav nav-tabs">
+			<li ng-click="switchToRunsAndClars()" ng-class="{true: 'active', false: ''}[activetab == 'runsandclars']"><a href="#">Overview</a></li>
+			<li ng-click="switchToAppeals()" ng-class="{true: 'active', false: ''}[activetab == 'appeals']"><a href="#">Run Appeals</a></li>
+			<li ng-click="switchToTeams()" ng-class="{true: 'active', false: ''}[activetab == 'teams']"><a href="#">Teams</a></li>
+			<li ng-click="switchToScoreboard()" ng-class="{true: 'active', false: ''}[activetab == 'scoreboard']"><a href="#">Scoreboard</a></li>
+			<li ng-click="switchToWritten()" ng-class="{true: 'active', false: ''}[activetab == 'written']"><a href="#">Written</a></li>
+			<li ng-click="switchToAccounts()" ng-class="{true: 'active', false: ''}[activetab == 'accounts']"><a href="#">Accounts</a></li>
+			<li ng-click="switchToProblems()" ng-class="{true: 'active', false: ''}[activetab == 'problems']"><a href="#">Problems</a></li>
+		</ul>
+		<div ng-controller="runsAndClarsController" ng-class="{true: 'active', false: 'hidden'}[activetab === 'runsandclars']">
+			<div id="responsemodal" class="modal fade">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Respond to clarification</h4>
+						</div>
+						<div class="modal-body">
+							<form class="form-horizontal">
+								<div class="form-group">
+									<label class="col-xs-4 col-lg-3 control-label">Run ID</label>
+									<div class="col-xs-8 col-lg-9">
+										<input type="text" class="form-control" ng-model="resp.id" disabled></input>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-4 col-lg-3 control-label">Response</label>
+									<div class="col-xs-8 col-lg-9">
+										<textarea class="form-control" ng-model="resp.content"></textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-xs-4 col-lg-3 control-label">Global</label>
+									<div class="col-xs-8 col-lg-9">
+										<input type="checkbox" ng-model="resp.global"></input>
+									</div>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-primary" ng-click="sendResponse(resp)" data-dismiss="modal">Submit response</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-4">
+				<h3>Runs</h3>
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<td>Team</td>
+							<td>Problem</td>
+							<td>Ruling</td>
+							<td>Run ID</td>
+						</tr>
+					</thead>
+					<tr ng-repeat="run in runs">
+						<td>
+							((run.team))
+						</td>
+						<td>
+							((run.probnumber))
+						</td>
+						<td>
+							((run.ruling))
+						</td>
+						<td>
+							((run.runid))
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-xs-8">
+				<h3>Clarifications</h3>
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr>
+							<td>Team Number</td>
+							<td>Problem Number</td>
+							<td>Question</td>
+							<td>Response</td>
+						</tr>
+					</thead>
+					<tr ng-repeat="clarification in clars" ng-click="respondToClar(clarification._id)" ng-class="{true: 'warning', false: ''}[clarification.response === '']">
+						<td>
+							((clarification.team))
+						</td>
+						<td>
+							((clarification.problem))
+						</td>
+						<td>
+							((clarification.content))
+						</td>
+						<td>
+							((clarification.response))
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div ng-controller="appealsController" ng-class="{true: 'active', false: 'hidden'}[activetab === 'appeals']">
+			<div class="alert alert-info" role="alert">Appeals MUST be submitted with a form giving the team number, problem number, ruling, and run ID</div>
+			<div class="col-xs-4">
+				<h3>Search</h3>
+				<form class="form-horizontal">
+					<div class="row">
+						<div class="form-group">
+							<label class="col-xs-4 col-lg-3 control-label">Team</label>
+							<div class="col-xs-8 col-lg-9">
+								<input type="text" class="form-control" ng-model="query.team">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-4 col-lg-3 control-label">Problem</label>
+							<div class="col-xs-8 col-lg-9">
+								<input type="text" class="form-control" ng-model="query.probnumber">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-4 col-lg-3 control-label">Ruling</label>
+							<div class="col-xs-8 col-lg-9">
+								<input type="text" class="form-control" ng-model="query.ruling">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-4 col-lg-3 control-label">Run ID</label>
+							<div class="col-xs-8 col-lg-9">
+								<input type="text" class="form-control" ng-model="query.runid">
+							</div>
+						</div>
+						<input type="button" class="btn btn-success btn-block" ng-click="searchRun(query)" value="Search">
+					</div>
+				</form>
+			</div>
+			<div class="col-xs-8" ng-class="{true: 'active', false: 'hidden'}[hasRun]">
+				<h3>Run</h3>
+				<h4>Problem: ((run.probnumber))</h4>
+				<h4>Run ID: ((run.runid))</h4>
+				<h4>Path: ((run.path))</h4>
+				<h4>Output: ((run.output))</h4>
+				<h4>Ruling: ((run.ruling))</h4>
+				<h3>Change ruling:</h3>
+				<button type="button" class="btn btn-success" ng-click="changeRuling(run, 'correct')">Correct</button>
+				<button type="button" class="btn btn-danger" ng-click="changeRuling(run, 'incorrect')">Incorrect</button>
+				<button type="button" class="btn btn-warning" ng-click="changeRuling(run, 'runtime')">Runtime Error</button>
+				<button type="button" class="btn btn-warning" ng-click="changeRuling(run, 'compile')">Compile Error</button>
+				<button type="button" class="btn btn-warning" ng-click="changeRuling(run, 'timeout')">Timeout</button>
+			</div>
+		</div>
+		<div ng-controller="teamsController" ng-class="{true: 'active', false: 'hidden'}[activetab === 'teams']">
+			<table class="table">
+				<thead>
+					<tr>
+						<td>Team Number</td>
+						<td>School</td>
+						<td>Division</td>
+						<td>Member 1</td>
+						<td>Member 2</td>
+						<td>Member 3</td>
+					</tr>
+				</thead>
+				<tr ng-repeat="team in teams">
+					<td>
+						((team.username))
+					</td>
+					<td>
+						((team.school))
+					</td>
+					<td>
+						((team.division))
+					</td>
+					<td ng-repeat="member in team.members">
+						((member.name))
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div ng-controller="scoreboardController" ng-class="{true: 'active', false: 'hidden'}[activetab === 'scoreboard']">
+			<div class="col-xs-6">
+				<h3>Novice Scoreboard</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<td>Team</td>
+							<td>Score</td>
+						</tr>
+					</thead>
+					<tr ng-repeat="team in scores.novice">
+						<td>
+							((team.team))
+						</td>
+						<td>
+							((team.score))
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-xs-6">
+				<h3>Advanced Scoreboard</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<td>Team</td>
+							<td>Score</td>
+						</tr>
+					</thead>
+					<tr ng-repeat="team in scores.advanced">
+						<td>
+							((team.team))
+						</td>
+						<td>
+							((team.score))
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div ng-controller="writtenController" ng-class="{true: 'active', false: 'hidden'}[activetab === 'written']">
+			<h3>Edit Written Scores</h3>
+			<table class="table">
+				<thead>
+					<tr>
+						<td>Team</td>
+						<td>Members</td>
+					</tr>
+				</thead>
+				<tr ng-repeat="team in teams">
+					<td>
+						((team.username))
+					</td>
+					<td>
+						((team.members[0].name))
+					</td>
+					<td>
+						((team.members[0].score))
+					</td>
+					<td>
+						<input type="text" class="form-control" ng-model="newscore0" ng-blur="changeScore(team.username,team.members[0].name,newscore0)">
+					</td>
+					<td>
+						((team.members[1].name))
+					</td>
+					<td>
+						((team.members[1].score))
+					</td>
+					<td>
+						<input type="text" class="form-control" ng-model="newscore1" ng-blur="changeScore(team.username,team.members[1].name,newscore1)">
+					</td>
+					<td>
+						((team.members[2].name))
+					</td>
+					<td>
+						((team.members[2].score))
+					</td>
+					<td>
+						<input type="text" class="form-control" ng-model="newscore2" ng-blur="changeScore(team.username,team.members[2].name,newscore2)">
+					</td>
+				</tr>
+			</table>
+			<h3>Written Scoreboard</h3>
+			<div class="col-xs-6">
+				<h3>Novice Scoreboard</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<td>Name</td>
+							<td>Team</td>
+							<td>School</td>
+							<td>Score</td>
+						</tr>
+					</thead>
+					<tr ng-repeat="score in scores.novice">
+						<td>
+							((score.name))
+						</td>
+						<td>
+							((score.team))
+						</td>
+						<td>
+							((score.school))
+						</td>
+						<td>
+							((score.score))
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-xs-6">
+				<h3>Advanced Scoreboard</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<td>Name</td>
+							<td>Team</td>
+							<td>School</td>
+							<td>Score</td>
+						</tr>
+					</thead>
+					<tr ng-repeat="score in scores.advanced">
+						<td>
+							((score.name))
+						</td>
+						<td>
+							((score.team))
+						</td>
+						<td>
+							((score.school))
+						</td>
+						<td>
+							((score.score))
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div ng-controller="accountController" ng-class="{true: 'active', false: 'hidden'}[activetab === 'accounts']">
+			<h3>Batch Create Accounts</h3>
+			<textarea class="form-control" ng-model="data"></textarea>
+			<br>
+			<input type="button" class="btn btn-success btn-lg" ng-click="batchCreate(data)" value="Submit">
+		</div>
+		<div ng-controller="problemController" ng-class="{true: 'active', false: 'hidden'}[activetab === 'problems']">
+			<h3>Create Problem</h3>
+			<form class="form-horizontal">
+				<div class="row">
+					<div class="col-xs-8">
+						<div class="form-group">
+							<label class="col-xs-4 col-lg-3 control-label">Problem Number</label>
+							<div class="col-xs-8 col-lg-9">
+								<input type="text" class="form-control" ng-model="problem.number"></input>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-4 col-lg-3 control-label">Problem Name</label>
+							<div class="col-xs-8 col-lg-9">
+								<input type="text" class="form-control" ng-model="problem.name"></input>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-4 col-lg-3 control-label">Problem Output</label>
+							<div class="col-xs-8 col-lg-9">
+							<textarea class="form-control" ng-model="problem.output"></textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-4 col-lg-3 control-label">Problem Runtime</label>
+							<div class="col-xs-8 col-lg-9">
+								<input type="text" class="form-control" ng-model="problem.runtime"></input>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-4">
+						<input type="button" class="btn btn-success btn-lg btn-block submit-button" ng-click="sendProblem(problem)" value="Create">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

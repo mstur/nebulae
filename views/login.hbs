@@ -1,0 +1,17 @@
+<div class="container well well-lg">
+	<h2 class="text-center">{{title}}</h2>
+	<p class="alert alert-success">
+		Welcome! This control panel can be used to submit problems and clarifications. By logging in, you agree to abide by all of the contest rules. To log in, please use the login information located in your folder. This panel is designed for modern, standards-compliant web browsers such as Internet Explorer 10 and above, Google Chrome, Safari, and Mozilla Firefox. If you are experiencing difficulties, please raise your hand; someone will come to assist you.
+		<p>
+	<form action="/login" method="post">
+		<div class="form-group">
+			<label class="control-label">Username</label>
+			<input class="form-control" type="text" name="username">
+		</div>
+		<div class="form-group">
+			<label class="control-label">Password</label>
+			<input class="form-control" type="password" name="password">
+		</div>
+		<input type="submit" class="btn btn-default btn-lg btn-block" value="Log In">
+	</form>
+</div>

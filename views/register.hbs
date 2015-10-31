@@ -1,0 +1,41 @@
+<script src="/js/teamdash.js"></script>
+<div class="container" ng-app="nebulaeTeam">
+	<div ng-controller="infoController">
+		<h2>Team Information</h2>
+		<form action="/register" method="post">
+			<div class="form-group">
+				<input class="form-control" type="text" ng-model="member1" name="member1" placeholder="Member 1">
+			</div>
+			<div class="form-group">
+				<input class="form-control" type="text" name="member2" placeholder="Member 2">
+			</div>
+			<div class="form-group">
+				<input class="form-control" type="text" name="member3" placeholder="Member 3">
+			</div>
+
+			<div class="form-group">
+				<label class="control-label">School</label>
+				<select class="form-control" name="school" ng-model="sch">
+					<option ng-repeat="school in schools">((school.name))</option>
+				</select>
+			</div>
+			<div class="radio">
+				<label>
+					<input type="radio" name="division" value="novice" ng-model="division"> Novice
+				</label>
+			</div>
+
+			<div class="radio">
+				<label>
+					<input type="radio" name="division" value="advanced" ng-model="division"> Advanced
+				</label>
+			</div>
+			<div ng-show="!member1.length || !sch.length || !division.length">
+				<input class="btn btn-large disabled" type="submit" value="Continue" disabled="disabled">
+			</div>
+			<div ng-show="member1.length && sch.length && division.length">
+				<input class="btn btn-large" type="submit" value="Continue">
+			</div>
+		</form>
+	</div>
+</div>

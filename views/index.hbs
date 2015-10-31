@@ -1,0 +1,188 @@
+<script src="/js/teamdash.js"></script>
+<div class="container" ng-app="nebulaeTeam">
+	<div ng-controller="overviewController">
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<span class="navbar-brand">
+						<span class="text-danger">
+							((timeleft))
+						</span>
+					</span>
+					<p class="navbar-text">
+						((username)) - Score: ((score))
+					</p>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<div ng-controller="tabController">
+		<ul class="nav nav-tabs">
+			<li ng-click="switchToRuns()" ng-class="{true: 'active', false: ''}[activetab === 'runs']"><a href="#">Runs</a></li>
+			<li ng-click="switchToClars()" ng-class="{true: 'active', false: ''}[activetab === 'clars']"><a href="#">Clarifications</a></li>
+			<li ng-click="switchToScores()" ng-class="{true: 'active', false: ''}[activetab === 'scores']"><a href="#">Scoreboard</a></li>
+			<li ng-click="switchToTeam()" ng-class="{true: 'active', false: ''}[activetab === 'team']"><a href="#">Team</a></li>
+		</ul>
+		<div ng-controller="runController" ng-class="{true: 'active', false: 'hidden'}[activetab === 'runs']">
+			<h3>Submit Run</h3>
+			<form class="form-horizontal">
+				<div class="row">
+					<div class="col-xs-8">
+						<div class="form-group">
+							<label class="col-xs-4 col-lg-3 control-label">Problem Number</label>
+							<div class="col-xs-8 col-lg-9">
+								<select class="form-control" ng-model="run.problem">
+									<option ng-repeat="prob in probs" value="((prob.number))">((prob.number)). ((prob.name))</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-4 col-lg-3 control-label">Code File</label>
+							<div class="col-xs-8 col-lg-9">
+								<button class="btn btn-warning btn-block" ngf-select ng-model="run.file" required>((run.file ? run.file.name : 'Upload'))</button>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-4">
+						<input type="button" class="btn btn-success btn-lg btn-block submit-button" value="Submit" ng-show="!run.problem || !run.file || run.file.$error" disabled="disabled">
+						<input type="button" class="btn btn-success btn-lg btn-block submit-button" ng-click="sendFile(run)" value="Submit" ng-show="run.problem && run.file && !run.file.$error">
+					</div>
+				</div>
+			</form>
+			<h3>Runs</h3>
+			<table class="table">
+				<thead>
+					<tr>
+						<td>Problem Number</td>
+						<td>Ruling</td>
+						<td>Run ID</td>
+					</tr>
+				</thead>
+				<tr ng-repeat="run in runs">
+					<td>
+						((run.probnumber))
+					</td>
+					<td>
+						((run.ruling))
+					</td>
+					<td>
+						((run.runid))
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div ng-controller="clarificationController" ng-class="{true: 'active', false: 'hidden'}[activetab === 'clars']">
+			<h3>Submit Clarification</h3>
+			<form class="form-horizontal">
+				<div class="row">
+					<div class="col-xs-8">
+						<div class="form-group">
+							<label class="col-xs-4 col-lg-3 control-label">Problem Number</label>
+							<div class="col-xs-8 col-lg-9">
+								<select class="form-control" ng-model="clar.problem">
+									<option ng-repeat="prob in probs" value="((prob.number))">((prob.number)). ((prob.name))</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-xs-4 col-lg-3 control-label">Question</label>
+							<div class="col-xs-8 col-lg-9">
+								<textarea class="form-control" ng-model="clar.content"></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-4">
+						<input type="button" class="btn btn-success btn-lg btn-block submit-button" value="Submit" ng-show="!clar.problem || !clar.content.length" disabled="disabled">
+						<input type="button" class="btn btn-success btn-lg btn-block submit-button" ng-click="sendClar(clar)" value="Submit" ng-show="clar.problem && clar.content.length">
+					</div>
+				</div>
+			</form>
+			<h3>Clarifications</h3>
+			<table class="table">
+				<thead>
+					<tr>
+						<td>Team Number</td>
+						<td>Problem Number</td>
+						<td>Question</td>
+						<td>Response</td>
+					</tr>
+				</thead>
+				<tr ng-repeat="clarification in clars">
+					<td>
+						((clarification.team))
+					</td>
+					<td>
+						((clarification.problem))
+					</td>
+					<td>
+						((clarification.content))
+					</td>
+					<td>
+						((clarification.response))
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div ng-controller="scoreboardController" ng-class="{true: 'active', false: 'hidden'}[activetab === 'scores']">
+			<div class="col-xs-6">
+				<h3>Novice Scoreboard</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<td>Team</td>
+							<td>Score</td>
+						</tr>
+					</thead>
+					<tr ng-repeat="team in scores.novice">
+						<td>
+							((team.team))
+						</td>
+						<td>
+							((team.score))
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-xs-6">
+				<h3>Advanced Scoreboard</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<td>Team</td>
+							<td>Score</td>
+						</tr>
+					</thead>
+					<tr ng-repeat="team in scores.advanced">
+						<td>
+							((team.team))
+						</td>
+						<td>
+							((team.score))
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div ng-controller="teamController" ng-class="{true: 'active', false: 'hidden'}[activetab === 'team']">
+			<h3>((name)) - ((division))</h3>
+			<h4>((school))</h4>
+			<h3>Written Scores</h3>
+			<table class="table">
+				<thead>
+					<tr>
+						<td>Team Member</td>
+						<td>Written Score</td>
+					</tr>
+				</thead>
+				<tr ng-repeat="member in members">
+					<td>
+						((member.name))
+					</td>
+					<td>
+						((member.score))
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
