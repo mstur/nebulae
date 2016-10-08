@@ -61,8 +61,8 @@ public class JavaJudge {
 
 		try {
 			Class<?> c = loader.loadClass(className);
-			private Method main = c.getMethod("main", String[].class);
-			private Thread th = new Thread(new Runnable() {
+			final Method main = c.getMethod("main", String[].class);
+			final Thread th = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					try {
